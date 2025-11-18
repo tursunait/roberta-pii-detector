@@ -205,5 +205,7 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
-data/raw
-data/processed
+data/raw/
+
+# processed data (not tracked)
+data/processed/
