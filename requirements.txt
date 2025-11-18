@@ -1,0 +1,31 @@
+# Core libraries
+numpy>=1.23
+pandas>=1.5
+
+# Hugging Face ecosystem
+transformers>=4.41.0
+datasets>=2.18.0
+tokenizers>=0.19.0
+accelerate>=0.29.0
+huggingface_hub>=0.23.0
+
+# Synthetic data generation
+faker>=24.0.0
+regex>=2024.5.15
+
+# Optional: Jupyter for debugging / inspection
+jupyter
+ipykernel
+
+# Optional: evaluation utilities
+seqeval>=1.2.2
+
+# (If using PyTorch with GPU)
+torch>=2.2.0
+
+# If on M1/M2/M3 Mac and need CPU-only Torch:
+# torch==2.2.0 --index-url https://download.pytorch.org/whl/cpu
+
+# Utility libraries
+tqdm>=4.65.0
+python-dotenv>=1.0.1
