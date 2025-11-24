@@ -4,32 +4,58 @@ import time
 import json
 import pandas as pd
 from transformers import AutoTokenizer, AutoModelForTokenClassification
-from my_trained_pii_model.config_and_labels import LABEL2ID, ID2LABEL
+import os
+import sys
 
-print("🚀 Starting Real-World Evaluation with YOUR Trained Model")
+print(" Starting Real-World Evaluation with the trained model")
 
-# Load YOUR trained model
-model_path = "./my_trained_pii_model"
+# Configuration
+MODEL_PATH = "./my_trained_pii_model"  # Path to your saved model
 
-try:
-    print(f"🔧 Loading your model from: {model_path}")
-    model = AutoModelForTokenClassification.from_pretrained(model_path)
-    tokenizer = AutoTokenizer.from_pretrained(model_path)
-    print("✅ Successfully loaded YOUR trained model!")
-    
-except Exception as e:
-    print(f"❌ Error loading model: {e}")
-    print("💡 Falling back to trainer object...")
-    
-    if 'trainer' in globals():
-        model = trainer.model
-        tokenizer = trainer.tokenizer
-        print("✅ Using model from trainer object")
-    else:
-        raise Exception("No trained model found. Please run training first.")
+def load_model_and_labels(model_path):
+    """Load model and extract label mappings"""
+    try:
+        print(f"🔧 Loading model from: {model_path}")
+        
+        # Load tokenizer and model
+        tokenizer = AutoTokenizer.from_pretrained(model_path)
+        model = AutoModelForTokenClassification.from_pretrained(model_path)
+        
+        # Extract label mappings from model config
+        if hasattr(model.config, 'id2label') and model.config.id2label:
+            ID2LABEL = model.config.id2label
+            # Ensure keys are integers
+            if isinstance(list(ID2LABEL.keys())[0], str):
+                ID2LABEL = {int(k): v for k, v in ID2LABEL.items()}
+            LABEL2ID = {v: k for k, v in ID2LABEL.items()}
+        else:
+            # Default PII labels (adjust based on your training)
+            print("Using default PII labels")
+            default_labels = [
+                'O', 'B-PERSON', 'I-PERSON', 'B-EMAIL', 'I-EMAIL', 
+                'B-PHONE', 'I-PHONE', 'B-ADDRESS', 'I-ADDRESS', 
+                'B-SSN', 'I-SSN', 'B-CREDIT_CARD', 'I-CREDIT_CARD', 
+                'B-DATE', 'I-DATE', 'B-ORG', 'I-ORG'
+            ]
+            ID2LABEL = {i: label for i, label in enumerate(default_labels)}
+            LABEL2ID = {v: k for k, v in ID2LABEL.items()}
+        
+        print(f"✅ Loaded model with {len(ID2LABEL)} labels")
+        return model, tokenizer, ID2LABEL, LABEL2ID
+        
+    except Exception as e:
+        print(f"Error loading model: {e}")
+        print("💡 Please ensure:")
+        print("   1. Your model is saved at the correct path")
+        print("   2. The model was properly trained and saved")
+        print("   3. You have all required packages installed")
+        raise
+
+# Load the model
+model, tokenizer, ID2LABEL, LABEL2ID = load_model_and_labels(MODEL_PATH)
 
 # STEP 1: Collect Real Reddit Data
-def collect_reddit_samples(subreddits=['relationships', 'personalfinance', 'jobs', 'askreddit'], limit=20):
+def collect_reddit_samples(subreddits=['relationships', 'personalfinance', 'jobs', 'askreddit'], limit=15):
     """
     Collect real text samples from Reddit where people might share personal info
     """
@@ -63,9 +89,9 @@ def collect_reddit_samples(subreddits=['relationships', 'personalfinance', 'jobs
             time.sleep(1)  # Be respectful to Reddit's API
             
         except Exception as e:
-            print(f"❌ Error fetching from r/{subreddit}: {e}")
+            print(f"Error fetching from r/{subreddit}: {e}")
     
-    print(f"✅ Collected {len(samples)} samples from Reddit")
+    print(f"Collected {len(samples)} samples from Reddit")
     return samples
 
 # STEP 2: Create synthetic samples for known ground truth
@@ -89,6 +115,30 @@ def create_synthetic_test_samples():
             ],
             'source': 'synthetic_gov',
             'category': 'government_id'
+        },
+        {
+            'text': "Please ship to 123 Maple Street, Springfield IL 62704 and bill my card 4111-1111-1111-1111",
+            'true_entities': [
+                {'start': 15, 'end': 56, 'label': 'ADDRESS', 'text': '123 Maple Street, Springfield IL 62704'},
+                {'start': 74, 'end': 93, 'label': 'CREDIT_CARD', 'text': '4111-1111-1111-1111'}
+            ],
+            'source': 'synthetic_shipping',
+            'category': 'shipping_billing'
+        },
+        {
+            'text': "My name is Sarah Johnson and I work at Google as a software engineer",
+            'true_entities': [
+                {'start': 11, 'end': 24, 'label': 'PERSON', 'text': 'Sarah Johnson'},
+                {'start': 41, 'end': 47, 'label': 'ORG', 'text': 'Google'}
+            ],
+            'source': 'synthetic_employment',
+            'category': 'employment'
+        },
+        {
+            'text': "The weather is nice today and I went for a walk in the park",
+            'true_entities': [],
+            'source': 'synthetic_no_pii',
+            'category': 'no_pii'
         }
     ]
 
@@ -174,27 +224,7 @@ def predict_entities_advanced(texts, model, tokenizer, id2label):
     
     return all_predictions
 
-# STEP 4: Collect Real Reddit Data
-print("\n📡 Collecting real-world data from Reddit...")
-reddit_samples = collect_reddit_samples(limit=15)  # Get 15 from each subreddit
-
-# STEP 5: Add synthetic samples for reliable metrics
-synthetic_samples = create_synthetic_test_samples()
-
-# STEP 6: Combine all test samples
-all_test_samples = synthetic_samples + reddit_samples[:20]  # Use first 20 Reddit samples
-
-print(f"\n📊 Test Dataset Composition:")
-print(f"   - Synthetic samples: {len(synthetic_samples)}")
-print(f"   - Reddit samples: {len(reddit_samples[:20])}")
-print(f"   - Total samples: {len(all_test_samples)}")
-
-# STEP 7: Run predictions on all samples
-print("\n🔮 Running model predictions on real-world data...")
-texts = [sample['text'] for sample in all_test_samples]
-predictions = predict_entities_advanced(texts, model, tokenizer, ID2LABEL)
-
-# STEP 8: Calculate metrics (only for synthetic samples where we have ground truth)
+# STEP 4: Calculate metrics
 def calculate_metrics_with_reddit(results, synthetic_count):
     """Calculate metrics for synthetic data and analyze Reddit data qualitatively"""
     
@@ -253,90 +283,7 @@ def calculate_metrics_with_reddit(results, synthetic_count):
     
     return metrics
 
-# STEP 9: Generate comprehensive results
-print("\n" + "="*70)
-print("📊 REAL-WORLD EVALUATION RESULTS - REDDIT DATA + SYNTHETIC")
-print("="*70)
-
-# Combine results
-results = []
-for i, (sample, pred) in enumerate(zip(all_test_samples, predictions)):
-    result = {
-        'text': sample['text'],
-        'source': sample.get('source', 'synthetic'),
-        'category': sample.get('category', 'reddit'),
-        'predicted_entities': pred['predicted_entities']
-    }
-    
-    # Only include true_entities for synthetic samples
-    if 'true_entities' in sample:
-        result['true_entities'] = sample['true_entities']
-    
-    results.append(result)
-
-# Calculate metrics
-metrics = calculate_metrics_with_reddit(results, len(synthetic_samples))
-
-# Display results
-print(f"\n🎯 SYNTHETIC DATA PERFORMANCE (Known Ground Truth):")
-print(f"   Precision: {metrics['synthetic_metrics']['precision']:.3f}")
-print(f"   Recall:    {metrics['synthetic_metrics']['recall']:.3f}")
-print(f"   F1 Score:  {metrics['synthetic_metrics']['f1']:.3f}")
-print(f"   True Positives:  {metrics['synthetic_metrics']['tp']}")
-print(f"   False Positives: {metrics['synthetic_metrics']['fp']}")
-print(f"   False Negatives: {metrics['synthetic_metrics']['fn']}")
-
-print(f"\n📈 REDDIT DATA ANALYSIS (Real-World Patterns):")
-reddit_analysis = metrics['reddit_analysis']
-print(f"   Total Reddit samples: {reddit_analysis['total_samples']}")
-print(f"   Samples with PII detected: {reddit_analysis['samples_with_pii']}")
-print(f"   PII prevalence: {reddit_analysis.get('pii_prevalence', 0):.1%}")
-print(f"   Total entities detected: {reddit_analysis['total_entities_detected']}")
-print(f"   Entity types found: {reddit_analysis['entities_by_type']}")
-
-print(f"\n🔍 DETAILED REDDIT SAMPLE RESULTS:")
-print("-" * 70)
-
-# Show interesting Reddit samples
-reddit_results = results[len(synthetic_samples):]
-interesting_reddit_samples = [r for r in reddit_results if r['predicted_entities']]
-
-for i, result in enumerate(interesting_reddit_samples[:5]):  # Show first 5 interesting ones
-    print(f"\n{i+1}. [Reddit - {result['source']}]")
-    print(f"   Text: {result['text'][:100]}...")
-    print(f"   Detected PII: {[(e['label'], e['text']) for e in result['predicted_entities']]}")
-
-# Show some samples with no PII detected
-no_pii_samples = [r for r in reddit_results if not r['predicted_entities']][:3]
-if no_pii_samples:
-    print(f"\n📝 Samples with No PII Detected:")
-    for i, result in enumerate(no_pii_samples):
-        print(f"   {i+1}. {result['text'][:80]}...")
-
-print(f"\n🔎 SYNTHETIC SAMPLE PERFORMANCE:")
-print("-" * 70)
-
-for i, result in enumerate(results[:len(synthetic_samples)]):
-    print(f"\n{i+1}. [Synthetic - {result['category']}]")
-    print(f"   Text: {result['text']}")
-    print(f"   Expected: {[e['label'] for e in result['true_entities']]}")
-    print(f"   Detected: {[e['label'] for e in result['predicted_entities']]}")
-    
-    true_set = set((e['text'].lower(), e['label']) for e in result['true_entities'])
-    pred_set = set((e['text'].lower(), e['label']) for e in result['predicted_entities'])
-    
-    correct = true_set.intersection(pred_set)
-    missed = true_set - pred_set
-    extra = pred_set - true_set
-    
-    if correct:
-        print(f"   ✅ Correct: {list(correct)}")
-    if missed:
-        print(f"   ❌ Missed: {list(missed)}")
-    if extra:
-        print(f"   ⚠️  False Alarms: {list(extra)}")
-
-# STEP 10: Manual annotation template for Reddit data
+# STEP 5: Manual annotation template
 def create_reddit_annotation_template(reddit_results, filename="reddit_manual_annotation.json"):
     """Create a template for manual annotation of Reddit samples"""
     annotation_data = []
@@ -356,23 +303,19 @@ def create_reddit_annotation_template(reddit_results, filename="reddit_manual_an
     with open(filename, 'w') as f:
         json.dump(annotation_data, f, indent=2)
     
-    print(f"\n📋 Reddit annotation template saved: {filename}")
-    print("   Next: Manually annotate the 'true_entities' for Reddit samples")
+    print(f"📋 Reddit annotation template saved: {filename}")
     return filename
 
-# Create annotation template
-annotation_file = create_reddit_annotation_template(reddit_results[:10])  # First 10 for manual annotation
-
-# STEP 11: Save comprehensive report
-def save_complete_report(results, metrics, filename="stage3_complete_evaluation.json"):
+# STEP 6: Save comprehensive report
+def save_complete_report(results, metrics, annotation_file, filename="stage3_complete_evaluation.json"):
     """Save complete evaluation report"""
     report = {
         'evaluation_info': {
             'date': pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'model_source': model_path,
+            'model_source': MODEL_PATH,
             'total_samples': len(results),
             'synthetic_samples': len(synthetic_samples),
-            'reddit_samples': len(reddit_results),
+            'reddit_samples': len(results) - len(synthetic_samples),
             'model_type': 'RoBERTa-base (Fine-tuned for PII)'
         },
         'performance_metrics': metrics,
@@ -384,18 +327,191 @@ def save_complete_report(results, metrics, filename="stage3_complete_evaluation.
     with open(filename, 'w') as f:
         json.dump(report, f, indent=2, default=str)
     
-    print(f"\n💾 Complete evaluation report saved: {filename}")
+    print(f"💾 Complete evaluation report saved: {filename}")
     return filename
 
-final_report = save_complete_report(results, metrics)
+# STEP 7: Latency measurement
+def measure_latency(texts, model, tokenizer, num_runs=5):
+    """Measure inference latency"""
+    print("\n⏱️  Measuring inference latency...")
+    latencies = []
+    
+    # Use shorter texts for latency measurement
+    test_texts = texts[:min(5, len(texts))]
+    
+    for text in test_texts:
+        start_time = time.time()
+        
+        # Tokenize and predict
+        inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=256)
+        with torch.no_grad():
+            outputs = model(**inputs)
+        
+        end_time = time.time()
+        latency = (end_time - start_time) * 1000  # Convert to milliseconds
+        latencies.append(latency)
+    
+    avg_latency = sum(latencies) / len(latencies)
+    max_latency = max(latencies)
+    min_latency = min(latencies)
+    
+    print(f"   Average: {avg_latency:.2f} ms")
+    print(f"   Min: {min_latency:.2f} ms")
+    print(f"   Max: {max_latency:.2f} ms")
+    print(f"   Text length: {len(texts[0])} characters")
+    
+    return {
+        'average': avg_latency,
+        'min': min_latency,
+        'max': max_latency,
+        'all_latencies': latencies
+    }
 
-print(f"\n🎉 REAL-WORLD EVALUATION COMPLETED!")
-print(f"📁 Model used: {model_path}")
-print(f"📊 Report saved: {final_report}")
-print(f"📋 Annotation template: {annotation_file}")
-print(f"🔍 Reddit samples analyzed: {len(reddit_results)}")
-print(f"🎯 Synthetic samples tested: {len(synthetic_samples)}")
-print(f"\n📝 For your Stage 3 report, you now have:")
-print(f"   - Quantitative metrics from synthetic data")
-print(f"   - Qualitative analysis of real Reddit data")
-print(f"   - Manual annotation template for further validation")
+# MAIN EXECUTION
+print("\n" + "="*70)
+print("📊 REAL-WORLD EVALUATION PIPELINE")
+print("="*70)
+
+# Collect data
+print("\n📡 Step 1: Collecting real-world data from Reddit...")
+reddit_samples = collect_reddit_samples(limit=10)  # Reduced for faster testing
+
+print("\n🎯 Step 2: Creating synthetic test samples...")
+synthetic_samples = create_synthetic_test_samples()
+
+# Combine all test samples
+all_test_samples = synthetic_samples + reddit_samples[:15]  # Use first 15 Reddit samples
+
+print(f"\n📊 Dataset Composition:")
+print(f"   - Synthetic samples: {len(synthetic_samples)}")
+print(f"   - Reddit samples: {len(reddit_samples[:15])}")
+print(f"   - Total samples: {len(all_test_samples)}")
+
+# Run predictions
+print("\n🔮 Step 3: Running model predictions...")
+texts = [sample['text'] for sample in all_test_samples]
+predictions = predict_entities_advanced(texts, model, tokenizer, ID2LABEL)
+
+# Measure latency
+latency_results = measure_latency(texts, model, tokenizer)
+
+# Combine results
+results = []
+for i, (sample, pred) in enumerate(zip(all_test_samples, predictions)):
+    result = {
+        'text': sample['text'],
+        'source': sample.get('source', 'synthetic'),
+        'category': sample.get('category', 'reddit'),
+        'predicted_entities': pred['predicted_entities']
+    }
+    
+    # Only include true_entities for synthetic samples
+    if 'true_entities' in sample:
+        result['true_entities'] = sample['true_entities']
+    
+    results.append(result)
+
+# Calculate metrics
+print("\n📈 Step 4: Calculating performance metrics...")
+metrics = calculate_metrics_with_reddit(results, len(synthetic_samples))
+
+# Create annotation template
+print("\n📋 Step 5: Creating manual annotation template...")
+annotation_file = create_reddit_annotation_template(results[len(synthetic_samples):][:10])  # First 10 Reddit samples
+
+# Save final report
+print("\n💾 Step 6: Generating final report...")
+final_report = save_complete_report(results, metrics, annotation_file)
+
+# STEP 8: Display comprehensive results
+print("\n" + "="*70)
+print("🎯 EVALUATION RESULTS SUMMARY")
+print("="*70)
+
+print(f"\n📈 SYNTHETIC DATA PERFORMANCE (Known Ground Truth):")
+synth_metrics = metrics['synthetic_metrics']
+print(f"   Precision: {synth_metrics['precision']:.3f}")
+print(f"   Recall:    {synth_metrics['recall']:.3f}")
+print(f"   F1 Score:  {synth_metrics['f1']:.3f}")
+print(f"   True Positives:  {synth_metrics['tp']}")
+print(f"   False Positives: {synth_metrics['fp']}")
+print(f"   False Negatives: {synth_metrics['fn']}")
+
+print(f"\n📊 REDDIT DATA ANALYSIS (Real-World Patterns):")
+reddit_analysis = metrics['reddit_analysis']
+print(f"   Total Reddit samples: {reddit_analysis['total_samples']}")
+print(f"   Samples with PII detected: {reddit_analysis['samples_with_pii']}")
+print(f"   PII prevalence: {reddit_analysis.get('pii_prevalence', 0):.1%}")
+print(f"   Total entities detected: {reddit_analysis['total_entities_detected']}")
+print(f"   Entity types found: {reddit_analysis['entities_by_type']}")
+
+print(f"\n⏱️  PERFORMANCE CHARACTERISTICS:")
+print(f"   Average latency: {latency_results['average']:.2f} ms")
+print(f"   Latency range: {latency_results['min']:.2f} - {latency_results['max']:.2f} ms")
+
+print(f"\n🔍 DETAILED SAMPLE ANALYSIS:")
+print("-" * 70)
+
+# Show synthetic sample results
+print(f"\n🎯 SYNTHETIC SAMPLES (Ground Truth):")
+for i, result in enumerate(results[:len(synthetic_samples)]):
+    print(f"\n{i+1}. [{result['category']}]")
+    print(f"   Text: {result['text']}")
+    print(f"   Expected: {[e['label'] for e in result['true_entities']]}")
+    print(f"   Detected: {[e['label'] for e in result['predicted_entities']]}")
+    
+    true_set = set((e['text'].lower(), e['label']) for e in result['true_entities'])
+    pred_set = set((e['text'].lower(), e['label']) for e in result['predicted_entities'])
+    
+    correct = true_set.intersection(pred_set)
+    missed = true_set - pred_set
+    extra = pred_set - true_set
+    
+    if correct:
+        print(f"   ✅ Correct: {list(correct)}")
+    if missed:
+        print(f"   ❌ Missed: {list(missed)}")
+    if extra:
+        print(f"   ⚠️  False Alarms: {list(extra)}")
+
+# Show interesting Reddit samples
+print(f"\n📝 REDDIT SAMPLES (Real-World Data):")
+reddit_results = results[len(synthetic_samples):]
+interesting_reddit_samples = [r for r in reddit_results if r['predicted_entities']]
+
+if interesting_reddit_samples:
+    print(f"\n🔍 Samples with PII Detected:")
+    for i, result in enumerate(interesting_reddit_samples[:3]):  # Show first 3
+        print(f"\n{i+1}. [Reddit - {result['source']}]")
+        print(f"   Text: {result['text'][:120]}...")
+        print(f"   Detected PII: {[(e['label'], e['text']) for e in result['predicted_entities']]}")
+
+# Show samples with no PII detected
+no_pii_samples = [r for r in reddit_results if not r['predicted_entities']][:2]
+if no_pii_samples:
+    print(f"\n📝 Samples with No PII Detected:")
+    for i, result in enumerate(no_pii_samples):
+        print(f"   {i+1}. {result['text'][:80]}...")
+
+print(f"\n" + "="*70)
+print("🎉 REAL-WORLD EVALUATION COMPLETED!")
+print("="*70)
+
+print(f"\n📁 Output Files:")
+print(f"   📊 Evaluation Report: {final_report}")
+print(f"   📋 Annotation Template: {annotation_file}")
+
+print(f"\n📝 For Your Stage 3 Report:")
+print(f"   ✅ Quantitative metrics from {len(synthetic_samples)} synthetic samples")
+print(f"   ✅ Qualitative analysis of {len(reddit_results)} Reddit samples") 
+print(f"   ✅ Performance metrics (Precision: {synth_metrics['precision']:.3f}, Recall: {synth_metrics['recall']:.3f}, F1: {synth_metrics['f1']:.3f})")
+print(f"   ✅ Latency measurements for browser deployment assessment")
+print(f"   ✅ Manual annotation template for further validation")
+
+print(f"\n🔮 Next Steps:")
+print(f"   1. Review the generated reports")
+print(f"   2. Manually annotate the Reddit samples in {annotation_file}")
+print(f"   3. Use these results in your Stage 3 documentation")
+print(f"   4. Consider the latency results for browser extension feasibility")
+
+print(f"\n✨ Evaluation pipeline finished successfully!")
