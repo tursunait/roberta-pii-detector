@@ -1,6 +1,7 @@
 # Core libraries
 numpy>=1.23
 pandas>=1.5
+matplotlib>=3.5.0
 
 # Hugging Face ecosystem
 transformers>=4.41.0

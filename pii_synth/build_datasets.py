@@ -41,7 +41,7 @@ def spans_to_token_labels(
         text,
         max_length=MAX_LENGTH,
         truncation=True,
-        padding="max_length",
+        padding=False,  # ← CHANGED: Don't pad during data generation
         return_offsets_mapping=True,
     )
 

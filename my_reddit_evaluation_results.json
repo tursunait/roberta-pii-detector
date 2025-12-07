@@ -1,0 +1,555 @@
+{
+  "model_path": "./model/my_trained_pii_model",
+  "test_data": "./evaluation/reddit_manual_annotations_COMPLETED.json",
+  "num_samples": 10,
+  "metrics": {
+    "precision": 0.1111111111111111,
+    "recall": 0.0851063829787234,
+    "f1_score": 0.09638554216867469
+  },
+  "entity_counts": {
+    "true_total": 51,
+    "pred_total": 20,
+    "by_type_true": {
+      "AGE": 40,
+      "PERSON": 10,
+      "DATE": 1
+    },
+    "by_type_pred": {
+      "PERSON": 20
+    }
+  },
+  "detailed_results": [
+    {
+      "id": 0,
+      "text": "My partner 31M is leaving me 28F for a another woman after I helped build his entire career. I feel used, discarded and really just betrayed. What do I do now?. Disclaimer: I'm not using real names.\n\nHi everyone. I do not have anyone else to talk to right now, and I feel completely alone.\n\nI have been with Jay 31M for about six years. We met when he was struggling with a major career project that helped shape his entire future. I am naturally good at planning and problem solving, so I helped him with everything. I prepared him for interviews, fixed a huge mistake that could have ended his career, connected him with people he needed, and supported him through every difficult step. I put myself on the line for him more times than I want to admit. It ultimately led me into sacrificing my career.\n\nMy family never liked him. They warned me that he cared more about ambition and his own motives than loyalty. Things got so tense at home that I eventually chose Jay over them so i\u2019m completely d",
+      "source": "reddit_relationships",
+      "true_entities": [
+        {
+          "start": 11,
+          "end": 13,
+          "label": "AGE",
+          "text": "31"
+        },
+        {
+          "start": 25,
+          "end": 27,
+          "label": "AGE",
+          "text": "28"
+        },
+        {
+          "start": 308,
+          "end": 311,
+          "label": "PERSON",
+          "text": "Jay"
+        }
+      ],
+      "predicted_entities": [
+        {
+          "start": 3,
+          "end": 10,
+          "label": "PERSON",
+          "text": "partner"
+        },
+        {
+          "start": 11,
+          "end": 14,
+          "label": "PERSON",
+          "text": "31M"
+        },
+        {
+          "start": 308,
+          "end": 315,
+          "label": "PERSON",
+          "text": "Jay 31M"
+        }
+      ],
+      "true_count": 3,
+      "pred_count": 3
+    },
+    {
+      "id": 1,
+      "text": "I (F32) got into an argument about birthday expectations with my (BF39). How can we solve this?. My boyfriend of two years asked me what I wanted for my birthday next week. Last year he got me some kinky underwear, which I\u2019m pretty sure was mostly for him since I never said I wanted anything like that.\n\nAnyway, he asked me today, and since he knows I\u2019ve been wishing he\u2019d be a bit more romantic, I told him I\u2019d love something personal like a date night, some nice words on a card, or just something that shows he likes me. I said it doesn\u2019t have to be anything fancy, just something thoughtful. Something that would show that he appreciates me.\n\nHe rolled his eyes and said, \u201cOh lord.\u201d He hates anything romantic because it makes him uncomfortable and \u201ccringy.\u201d I felt a bit sad because I\u2019ve communicated this so many times, and still he reacts so negatively, like I\u2019m asking for something totally unreasonable or impossible for him.\n\nWe started arguing, and I said that i think its a bit sad that ",
+      "source": "reddit_relationships",
+      "true_entities": [
+        {
+          "start": 3,
+          "end": 6,
+          "label": "AGE",
+          "text": "F32"
+        },
+        {
+          "start": 56,
+          "end": 60,
+          "label": "AGE",
+          "text": "BF39"
+        }
+      ],
+      "predicted_entities": [],
+      "true_count": 2,
+      "pred_count": 0
+    },
+    {
+      "id": 2,
+      "text": "My boyfriend 23M said if I 23F don\u2019t agree to get engaged by next month he is leaving. He is 23M Muslim and I am 23F Christian, and we have been together for about 2.5 years. I do not mind the idea of raising kids Muslim because I believe they would still grow up to be good people, it\u2019s not my first choice but whatever. It is just very different from my own upbringing and it is one of the big things making me hesitate about marriage, because there is so much uncertainty about what that entails. He told me they\u2019d be going to the mosque, Islamic school etc which I\u2019ve had to come to terms with. I\u2019m not very religious so I think that\u2019s why I was able to be okay with it, but it\u2019s just going to be weird having my kids follow something I don\u2019t believe in. \n\nAnother concern is the living arrangement. He told me that no matter where we live his mom would be living with us in the basement. His dad passed away a few years ago and it is normal in his culture for him to take care of his mom and you",
+      "source": "reddit_relationships",
+      "true_entities": [
+        {
+          "start": 12,
+          "end": 15,
+          "label": "AGE",
+          "text": "23M"
+        },
+        {
+          "start": 22,
+          "end": 25,
+          "label": "AGE",
+          "text": "23F"
+        },
+        {
+          "start": 44,
+          "end": 47,
+          "label": "AGE",
+          "text": "23M"
+        },
+        {
+          "start": 65,
+          "end": 68,
+          "label": "AGE",
+          "text": "23F"
+        }
+      ],
+      "predicted_entities": [
+        {
+          "start": 13,
+          "end": 16,
+          "label": "PERSON",
+          "text": "23M"
+        }
+      ],
+      "true_count": 4,
+      "pred_count": 1
+    },
+    {
+      "id": 3,
+      "text": "I (34M) hate my wife\u2019s (29F) best friends (24F/21TW). Wife and I have been married for about 3 months, cohabitated for a year. We\u2019ve been in a relationship for about 3 years. I\u2019m 34M, my wife is 29F \u201cNancy\u201d , her best friends are 24F and 21TW. 24F, \u201cAlison\u201d has been my wife\u2019s best friend for close to ten years. 21TW is \u201cLeah\u201d, one of Nancy\u2019s friends through Alison\n\nWhen I met Nancy, she was the only income in a house with two of her \u201cbest friends\u201d, who had not contributed to bills or food in any way for at least 6 months in one case and 10 months for the other. In the early days of us dating, I\u2019d come spend the night with her and cook dinner/dessert for everyone. Every time, without fail, both of the roommates would complain about the free meals they were getting, oftentimes to the point of my wife buying them take out. This happened more than once, though when I made dessert they\u2019d usually be so kind as to indulge in that. My wife was even paying one of their vehicles monthly note and",
+      "source": "reddit_relationships",
+      "true_entities": [
+        {
+          "start": 3,
+          "end": 6,
+          "label": "AGE",
+          "text": "34M"
+        },
+        {
+          "start": 19,
+          "end": 22,
+          "label": "AGE",
+          "text": "29F"
+        },
+        {
+          "start": 41,
+          "end": 44,
+          "label": "AGE",
+          "text": "24F"
+        },
+        {
+          "start": 45,
+          "end": 49,
+          "label": "AGE",
+          "text": "21TW"
+        },
+        {
+          "start": 95,
+          "end": 98,
+          "label": "AGE",
+          "text": "34M"
+        },
+        {
+          "start": 113,
+          "end": 116,
+          "label": "AGE",
+          "text": "29F"
+        },
+        {
+          "start": 119,
+          "end": 124,
+          "label": "PERSON",
+          "text": "Nancy"
+        },
+        {
+          "start": 146,
+          "end": 149,
+          "label": "AGE",
+          "text": "24F"
+        },
+        {
+          "start": 154,
+          "end": 158,
+          "label": "AGE",
+          "text": "21TW"
+        },
+        {
+          "start": 162,
+          "end": 165,
+          "label": "AGE",
+          "text": "24F"
+        },
+        {
+          "start": 168,
+          "end": 174,
+          "label": "PERSON",
+          "text": "Alison"
+        },
+        {
+          "start": 221,
+          "end": 225,
+          "label": "AGE",
+          "text": "21TW"
+        },
+        {
+          "start": 229,
+          "end": 232,
+          "label": "PERSON",
+          "text": "Leah"
+        },
+        {
+          "start": 252,
+          "end": 257,
+          "label": "PERSON",
+          "text": "Nancy"
+        },
+        {
+          "start": 336,
+          "end": 341,
+          "label": "PERSON",
+          "text": "Nancy"
+        },
+        {
+          "start": 360,
+          "end": 366,
+          "label": "PERSON",
+          "text": "Alison"
+        },
+        {
+          "start": 379,
+          "end": 384,
+          "label": "PERSON",
+          "text": "Nancy"
+        }
+      ],
+      "predicted_entities": [
+        {
+          "start": 54,
+          "end": 58,
+          "label": "PERSON",
+          "text": "Wife"
+        },
+        {
+          "start": 200,
+          "end": 205,
+          "label": "PERSON",
+          "text": "Nancy"
+        },
+        {
+          "start": 230,
+          "end": 233,
+          "label": "PERSON",
+          "text": "24F"
+        },
+        {
+          "start": 238,
+          "end": 242,
+          "label": "PERSON",
+          "text": "21TW"
+        },
+        {
+          "start": 244,
+          "end": 247,
+          "label": "PERSON",
+          "text": "24F"
+        },
+        {
+          "start": 250,
+          "end": 256,
+          "label": "PERSON",
+          "text": "Alison"
+        },
+        {
+          "start": 267,
+          "end": 274,
+          "label": "PERSON",
+          "text": "my wife"
+        },
+        {
+          "start": 322,
+          "end": 326,
+          "label": "PERSON",
+          "text": "Leah"
+        },
+        {
+          "start": 336,
+          "end": 341,
+          "label": "PERSON",
+          "text": "Nancy"
+        },
+        {
+          "start": 379,
+          "end": 384,
+          "label": "PERSON",
+          "text": "Nancy"
+        }
+      ],
+      "true_count": 17,
+      "pred_count": 10
+    },
+    {
+      "id": 4,
+      "text": "My boyfriend (27M) seems to hate everything about me (26F). Me (26F) and\u00a0my boyfriend (27M) have been together for five months. We are long-distance most of the time because of my career atm.\n\nHe hates my career. He knew who I was before he met me. He knew I performed, toured, recorded, did interviews, and had deadlines. He said it didn\u2019t bother him. I\u2019ve been doing things in the public eye since I was thirteen, but he sees it as such a threat. He hates the attention, hates the time it requires, and constantly tells me he wants me to \u201cput more effort into him\" and not my career. He generally hates the industry and all of my friends in it. He criticizes their work nonstop\u2014musicians, actors, creatives\u2014people he has never met. He also said I have such good music taste, and he doesn't understand why I make \"Taylor Swift pop music\" or why I associate with Taylor Swift at all.\n\nHe's extremely private, which honestly makes no sense given my public life. He didn't want me telling parents or fr",
+      "source": "reddit_relationships",
+      "true_entities": [
+        {
+          "start": 13,
+          "end": 16,
+          "label": "AGE",
+          "text": "27M"
+        },
+        {
+          "start": 40,
+          "end": 43,
+          "label": "AGE",
+          "text": "26F"
+        },
+        {
+          "start": 48,
+          "end": 51,
+          "label": "AGE",
+          "text": "26F"
+        },
+        {
+          "start": 70,
+          "end": 73,
+          "label": "AGE",
+          "text": "27M"
+        },
+        {
+          "start": 815,
+          "end": 827,
+          "label": "PERSON",
+          "text": "Taylor Swift"
+        },
+        {
+          "start": 863,
+          "end": 875,
+          "label": "PERSON",
+          "text": "Taylor Swift"
+        }
+      ],
+      "predicted_entities": [
+        {
+          "start": 87,
+          "end": 90,
+          "label": "PERSON",
+          "text": "27M"
+        },
+        {
+          "start": 680,
+          "end": 683,
+          "label": "PERSON",
+          "text": "mus"
+        },
+        {
+          "start": 815,
+          "end": 827,
+          "label": "PERSON",
+          "text": "Taylor Swift"
+        },
+        {
+          "start": 863,
+          "end": 875,
+          "label": "PERSON",
+          "text": "Taylor Swift"
+        }
+      ],
+      "true_count": 6,
+      "pred_count": 4
+    },
+    {
+      "id": 5,
+      "text": "Partner (M42) of 12 years deleted pics of me (F39) from his instagram. I was looking for an old pic of me with our dog on his instagram and couldn\u2019t find it. Then kept scrolling and realized all pictures of me are gone?! I\u2019m not sure when this happened. There weren\u2019t many photos of me there to begins with, maybe three or four. He doesn\u2019t post often, and when he does, it\u2019s usually pictures of our dog or from his hikes. But even our first pic together from way back in 2013 is gone. \n\nI immediately felt suspicious of this, like he wants to hide me or appear single. I spiraled a bit and hopped on his computer. Didn\u2019t really find anything in his email or search history. Some porn here and there. \n\nBut then I opened a folder titled \u201cscreenshots\u201d and it\u2019s a couple dozen pics all saved within the last month or so. And it\u2019s just screenshots of women. A lot of the pics look older based on the hair/clothing styles, but the screenshots were taken recently.  They are mostly clothed, but a few are n",
+      "source": "reddit_relationships",
+      "true_entities": [
+        {
+          "start": 9,
+          "end": 12,
+          "label": "AGE",
+          "text": "M42"
+        },
+        {
+          "start": 26,
+          "end": 29,
+          "label": "AGE",
+          "text": "F39"
+        },
+        {
+          "start": 262,
+          "end": 266,
+          "label": "DATE",
+          "text": "2013"
+        }
+      ],
+      "predicted_entities": [],
+      "true_count": 3,
+      "pred_count": 0
+    },
+    {
+      "id": 6,
+      "text": "I (27F) love my boyfriend (32M) but our cleaning differences are destroying me emotionally. I don\u2019t know what to do.. For context: I met my boyfriend almost 8 years ago. He\u2019d just moved into my building, and this happened about a month after my mom passed away from cancer. I inherited her condo, and I was 19 at the time, still in school for several years. I was vulnerable back then and very careful about who I let into my life. He eventually became my first boyfriend.\n\nWe were neighbours for about 3 years before we officially got together. At the beginning, he wanted to know me and be friends, and he often invited me for board games, walk, etc, but I refused, and he respected that. During that time, he had other relationships and acquaintances, mostly with younger women (at least 3). I only saw one woman from his age, and it didn't last long. Eventually, we developed feelings for each other when he was single (I was 22), and we\u2019ve now been together for 5 years.\n\nDespite that, we never ",
+      "source": "reddit_relationships",
+      "true_entities": [
+        {
+          "start": 3,
+          "end": 6,
+          "label": "AGE",
+          "text": "27F"
+        },
+        {
+          "start": 25,
+          "end": 28,
+          "label": "AGE",
+          "text": "32M"
+        },
+        {
+          "start": 184,
+          "end": 186,
+          "label": "AGE",
+          "text": "19"
+        },
+        {
+          "start": 661,
+          "end": 663,
+          "label": "AGE",
+          "text": "22"
+        }
+      ],
+      "predicted_entities": [],
+      "true_count": 4,
+      "pred_count": 0
+    },
+    {
+      "id": 7,
+      "text": "His sex drive became nonexistent and it's driving me crazy. My partner (25M) and I (25F) have been together for 4 years. He is incredible and I love him more than anything else. He is not under stress and exercises regularly.\n\nThe first year we were together, we couldn't keep our hands off of eachother, which I understand is common in new-ish relationships before it slows down into a more natural rhythm. \n\nThe problem is, after we hit the 1 year mark, his libido has completely vanished. We've had countless conversations about how he never wants to be intimate anymore and it really frustrates me, but I don't see any long-term solutions or effort from his end except a \"I just don't have a high sex drive\" from him. At first, he'd say that he's tired from work, had a long day, or that its very late. After we moved in together, it hasn't been any different. I've completely stopped initiating because he rejects me 9.5/10 times and over time I've started feeling resentful about it because he ",
+      "source": "reddit_relationships",
+      "true_entities": [
+        {
+          "start": 65,
+          "end": 68,
+          "label": "AGE",
+          "text": "25M"
+        },
+        {
+          "start": 74,
+          "end": 77,
+          "label": "AGE",
+          "text": "25F"
+        }
+      ],
+      "predicted_entities": [
+        {
+          "start": 60,
+          "end": 62,
+          "label": "PERSON",
+          "text": "My"
+        },
+        {
+          "start": 63,
+          "end": 70,
+          "label": "PERSON",
+          "text": "partner"
+        }
+      ],
+      "true_count": 2,
+      "pred_count": 2
+    },
+    {
+      "id": 8,
+      "text": "My girlfriend(20F) wants to break up over something small, and I(23M) feel like I\u2019m walking on eggshells. What should I do?. I\u2019ve been with my girlfriend for over a year. We\u2019ve gotten really serious. I introduced her to my family, I\u2019m focused on my career, and I genuinely want a future with her. While everyone around me is enjoying uni life, I\u2019m trying to build stability so I can marry her someday.\n\nRecently we had a fight over something that feels small but turned into something huge.\n\nI have an exam coming up in a week. One evening, I went to sleep and asked her to wake me up. She did, but after saying \u201clet\u2019s talk later,\u201d I accidentally fell asleep again. When I woke up, I told her I had a headache and slept through it. That\u2019s when she got really mad \u2014 short replies like \u201chm\u201d and \u201ck,\u201d acting cold, barely talking.\n\nI apologized multiple times and explained myself, but nothing helped. When I asked what exactly I did wrong, she started shouting at me but wouldn\u2019t tell me why she was ups",
+      "source": "reddit_relationships",
+      "true_entities": [
+        {
+          "start": 13,
+          "end": 16,
+          "label": "AGE",
+          "text": "20F"
+        },
+        {
+          "start": 38,
+          "end": 41,
+          "label": "AGE",
+          "text": "23M"
+        }
+      ],
+      "predicted_entities": [],
+      "true_count": 2,
+      "pred_count": 0
+    },
+    {
+      "id": 9,
+      "text": "22F, never kissed anyone about to meet a 26M and terrified.. TL;DR: 22F, never kissed anyone, about to meet a 26M I\u2019ve been talking to online. Nervous about being inexperienced and not sure if I should tell him. Seeking advice, especially from men 25\u201330, about how they would feel being someone\u2019s first kiss.\n\nI feel like a 13-year-old girl writing this. It\u2019s kind of ridiculous, but I honestly don\u2019t know what to do. I\u2019m 22 and I\u2019ve never kissed anyone. Never dated, never had anything with anyone. Sometimes I feel like this makes me seem like an \u201cadult fraud,\u201d as if I emotionally stopped at 13 while everyone else grew up, lived, had experiences\u2026 and I was left behind, behind in everything.\n\nI\u2019ve always been extremely shy. A shyness that might seem \u201ccute\u201d to outsiders, but for me it\u2019s paralyzing. I stutter, forget what to say, and it feels like no words exist in my vocabulary. I\u2019m working on this (but it\u2019s still very difficult). The weirdest part is I don\u2019t know where it comes from because",
+      "source": "reddit_relationships",
+      "true_entities": [
+        {
+          "start": 0,
+          "end": 3,
+          "label": "AGE",
+          "text": "22F"
+        },
+        {
+          "start": 32,
+          "end": 35,
+          "label": "AGE",
+          "text": "26M"
+        },
+        {
+          "start": 53,
+          "end": 56,
+          "label": "AGE",
+          "text": "22F"
+        },
+        {
+          "start": 86,
+          "end": 89,
+          "label": "AGE",
+          "text": "26M"
+        },
+        {
+          "start": 201,
+          "end": 204,
+          "label": "AGE",
+          "text": "25-30"
+        },
+        {
+          "start": 289,
+          "end": 291,
+          "label": "AGE",
+          "text": "13"
+        },
+        {
+          "start": 386,
+          "end": 388,
+          "label": "AGE",
+          "text": "22"
+        },
+        {
+          "start": 531,
+          "end": 533,
+          "label": "AGE",
+          "text": "13"
+        }
+      ],
+      "predicted_entities": [],
+      "true_count": 8,
+      "pred_count": 0
+    }
+  ]
+}

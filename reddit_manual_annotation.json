@@ -1,44 +1,26 @@
 [
   {
     "id": 0,
-    "text": "My partner 31M is leaving me 28F for a another woman after I helped build his entire career. I feel used, discarded and really just betrayed. What do I do now?. Disclaimer: I'm not using real names.\n\nHi everyone. I do not have anyone else to talk to right now, and I feel completely alone.\n\nI have been with Jay 31M for about six years. We met when he was struggling with a major career project that helped shape his entire future. I am naturally good at planning and problem solving, so I helped him with everything. I prepared him for interviews, fixed a huge mistake that could have ended his career, connected him with people he needed, and supported him through every difficult step. I put myself on the line for him more times than I want to admit. It ultimately led me into sacrificing my career.\n\nMy family never liked him. They warned me that he cared more about ambition and his own motives than loyalty. Things got so tense at home that I eventually chose Jay over them so i\u2019m completely d",
+    "text": "We can\u2019t decide where to live and someone has to lose F27 M33. I cannot believe I am asking reddit for advice but I am at a complete loss and my friends and family cannot offer impartial advice\n\nMe (F,27) and my partner Harry (M, 33) have been together for two years. He moved to my city by himself six months before I met him for a job. He was living by himself and didn\u2019t have any friends here. \n\nPrior to moving to my city, Harry had lived in a different city for 6 years working in a really good job. He had an entire life there, had bought a home there and a whole network of friends. He had moved there alone when he was in his twenties.\n\nWe truly fell completely head over heels on our first date, and from the first time meeting we didn\u2019t see anyone else. Within 6 months of dating we\u2019d gone on an overseas trip together and signed a year lease for a new apartment.\n\nFrom the beginning of our relationship, Harry had made it known to me that at some point he would like to move back to his ho",
     "source": "reddit_relationships",
     "model_predictions": [
       {
-        "text": "partner",
+        "text": "Harry(",
         "label": "PERSON",
-        "start": 3,
-        "end": 10
+        "start": 220,
+        "end": 227
       },
       {
-        "text": "31",
+        "text": "Harry",
         "label": "PERSON",
-        "start": 11,
-        "end": 13
+        "start": 427,
+        "end": 432
       },
       {
-        "text": "Jay31",
+        "text": "Harry",
         "label": "PERSON",
-        "start": 308,
-        "end": 314
-      },
-      {
-        "text": "him",
-        "label": "PERSON",
-        "start": 718,
-        "end": 721
-      },
-      {
-        "text": "him",
-        "label": "PERSON",
-        "start": 827,
-        "end": 830
-      },
-      {
-        "text": "Jay",
-        "label": "PERSON",
-        "start": 967,
-        "end": 970
+        "start": 915,
+        "end": 920
       }
     ],
     "true_entities": [],
@@ -47,7 +29,7 @@
   },
   {
     "id": 1,
-    "text": "I (F32) got into an argument about birthday expectations with my (BF39). How can we solve this?. My boyfriend of two years asked me what I wanted for my birthday next week. Last year he got me some kinky underwear, which I\u2019m pretty sure was mostly for him since I never said I wanted anything like that.\n\nAnyway, he asked me today, and since he knows I\u2019ve been wishing he\u2019d be a bit more romantic, I told him I\u2019d love something personal like a date night, some nice words on a card, or just something that shows he likes me. I said it doesn\u2019t have to be anything fancy, just something thoughtful. Something that would show that he appreciates me.\n\nHe rolled his eyes and said, \u201cOh lord.\u201d He hates anything romantic because it makes him uncomfortable and \u201ccringy.\u201d I felt a bit sad because I\u2019ve communicated this so many times, and still he reacts so negatively, like I\u2019m asking for something totally unreasonable or impossible for him.\n\nWe started arguing, and I said that i think its a bit sad that ",
+    "text": "I just had a huge realisation about men's vulnerability. Hello I am a guy (22m) and I always hear about how other men experience bitterness when recalling that when they \"opened-up\" to their gfs they were either dumped or it was used against them. But I've realised most of us guys don't really know what opening up really means and the proper way to do it.\n\nFirstly a lot if guys open up unnaturally when it doesn't feel right. They don't pick the right moment. It has to FEEL right. In your heart and your intuition. Your intuition must tell you that it's okay to open up. Most guys don't even allow them to feel emotions without realising girls actually do love guys having feelings and who feel things deeply but when they're selective about who to show and share those feelings to and also when they dont dump those feelings unto people. So it's important to trust your feelings. Your feelings come from the heart and your divine intuition . And it has to come naturally otherwise it looks perfo",
     "source": "reddit_relationships",
     "model_predictions": [],
     "true_entities": [],
@@ -56,59 +38,7 @@
   },
   {
     "id": 2,
-    "text": "I (34M) hate my wife\u2019s (29F) best friends (24F/21TW). Wife and I have been married for about 3 months, cohabitated for a year. We\u2019ve been in a relationship for about 3 years. I\u2019m 34M, my wife is 29F \u201cNancy\u201d , her best friends are 24F and 21TW. 24F, \u201cAlison\u201d has been my wife\u2019s best friend for close to ten years. 21TW is \u201cLeah\u201d, one of Nancy\u2019s friends through Alison\n\nWhen I met Nancy, she was the only income in a house with two of her \u201cbest friends\u201d, who had not contributed to bills or food in any way for at least 6 months in one case and 10 months for the other. In the early days of us dating, I\u2019d come spend the night with her and cook dinner/dessert for everyone. Every time, without fail, both of the roommates would complain about the free meals they were getting, oftentimes to the point of my wife buying them take out. This happened more than once, though when I made dessert they\u2019d usually be so kind as to indulge in that. My wife was even paying one of their vehicles monthly note and",
-    "source": "reddit_relationships",
-    "model_predictions": [
-      {
-        "text": "N",
-        "label": "PERSON",
-        "start": 200,
-        "end": 201
-      },
-      {
-        "text": "Al",
-        "label": "PERSON",
-        "start": 250,
-        "end": 252
-      },
-      {
-        "text": "Le",
-        "label": "PERSON",
-        "start": 322,
-        "end": 324
-      },
-      {
-        "text": "Nancy",
-        "label": "PERSON",
-        "start": 336,
-        "end": 341
-      },
-      {
-        "text": "Alison",
-        "label": "PERSON",
-        "start": 360,
-        "end": 366
-      },
-      {
-        "text": "Nancy",
-        "label": "PERSON",
-        "start": 379,
-        "end": 384
-      },
-      {
-        "text": "her",
-        "label": "PERSON",
-        "start": 630,
-        "end": 633
-      }
-    ],
-    "true_entities": [],
-    "notes": "",
-    "annotation_status": "pending"
-  },
-  {
-    "id": 3,
-    "text": "My boyfriend 23M said if I 23F don\u2019t agree to get engaged by next month he is leaving. He is 23M Muslim and I am 23F Christian, and we have been together for about 2.5 years. I do not mind the idea of raising kids Muslim because I believe they would still grow up to be good people, it\u2019s not my first choice but whatever. It is just very different from my own upbringing and it is one of the big things making me hesitate about marriage, because there is so much uncertainty about what that entails. He told me they\u2019d be going to the mosque, Islamic school etc which I\u2019ve had to come to terms with. I\u2019m not very religious so I think that\u2019s why I was able to be okay with it, but it\u2019s just going to be weird having my kids follow something I don\u2019t believe in. \n\nAnother concern is the living arrangement. He told me that no matter where we live his mom would be living with us in the basement. His dad passed away a few years ago and it is normal in his culture for him to take care of his mom and you",
+    "text": "I feel like my boyfriend's mom instead of his partner and I don't feel supported at all. I'm starting to feel really stuck and frustrated in my relationship and I don't know if I'm overreacting or if this is actually as bad as it feels.\n\nMy boyfriend (M20) and I (F19) have been together for a little over 2 years and we live together. I handle basically.. everything. All the dishes, laundry, cleaning, groceries, and anything our apartment needs. He hasn't even attempted to help with any of that in about 3 months. If I want something done, I either have to beg or just do it myself.\n\nI'll ask him 100 times to do one simple thing like take out the trash and he'll say he will, then completely forget. Days will go by. Eventually I'll give up and do it myself because it literally will not get done until I do. This happens with everything and even the days he's off and stays at home all day, nothing will be touched.\n\nHe also won't make any calls or handle anything important. Appointments, apar",
     "source": "reddit_relationships",
     "model_predictions": [],
     "true_entities": [],
@@ -116,8 +46,24 @@
     "annotation_status": "pending"
   },
   {
+    "id": 3,
+    "text": "My (24F) boyfriend (26M) refuses to see when girls are openly flirting with him and thinks I\u2019m just jealous. It\u2019s starting to really hurt.. \n\nMy boyfriend and I have been together for two years, and I\u2019ll be honest \u2014 I do get jealous sometimes. Not in a \u201chate other women\u201d or \u201caccuse him of cheating\u201d way. I\u2019ve worked on it a lot, and I don\u2019t react unless something feels genuinely off now. \n\nFor context: we have plenty of female friends and acquaintances. My boyfriend is a naturally warm, inclusive guy, and people gravitate toward him because he makes everyone feel comfortable. A lot of these girls are beautiful, smart, charismatic \u2014 and even if they find him attractive, they respect the boundaries of our relationship. They act like friends. There\u2019s no weird energy.\n\nBut then there have been a few girls who were obviously into him, to the point where other people noticed too. These girls will:\n\t\nstare at him for long stretches\n\nhover or find excuses to stand right next to him\n\nact lukewar",
+    "source": "reddit_relationships",
+    "model_predictions": [
+      {
+        "text": "boyfriend",
+        "label": "PERSON",
+        "start": 145,
+        "end": 154
+      }
+    ],
+    "true_entities": [],
+    "notes": "",
+    "annotation_status": "pending"
+  },
+  {
     "id": 4,
-    "text": "Partner (M42) of 12 years deleted pics of me (F39) from his instagram. I was looking for an old pic of me with our dog on his instagram and couldn\u2019t find it. Then kept scrolling and realized all pictures of me are gone?! I\u2019m not sure when this happened. There weren\u2019t many photos of me there to begins with, maybe three or four. He doesn\u2019t post often, and when he does, it\u2019s usually pictures of our dog or from his hikes. But even our first pic together from way back in 2013 is gone. \n\nI immediately felt suspicious of this, like he wants to hide me or appear single. I spiraled a bit and hopped on his computer. Didn\u2019t really find anything in his email or search history. Some porn here and there. \n\nBut then I opened a folder titled \u201cscreenshots\u201d and it\u2019s a couple dozen pics all saved within the last month or so. And it\u2019s just screenshots of women. A lot of the pics look older based on the hair/clothing styles, but the screenshots were taken recently.  They are mostly clothed, but a few are n",
+    "text": "24F &amp; 25M \u2013 5-year loving relationship but major lifestyle incompatibilities. How do I know if we should marry or if I should walk away?. I (24F) have been with my boyfriend (25M) for almost 5 years. We love each other deeply, and there is no cheating, no abuse, no toxicity. He\u2019s a genuinely good man\u2014loyal, stable, well-settled, responsible, and from a good family. My parents know about us and they want me to marry him.\n\nBut over time, our personalities and lifestyles have become very different.\n\nHe is practical, introverted, doesn\u2019t like social events, doesn\u2019t drink, doesn\u2019t party, and wants a peaceful, simple routine life.\nI\u2019m more social and emotional. I don\u2019t party often, but I do like going out occasionally, celebrating with friends, and drinking once in a while. For him, this is a complete non-negotiable. He\u2019s made it clear that he cannot accept a partner who drinks or goes out socially, even occasionally. The only \u201ccompromise\u201d he offered was that I should hide it from him, w",
     "source": "reddit_relationships",
     "model_predictions": [],
     "true_entities": [],
@@ -126,29 +72,16 @@
   },
   {
     "id": 5,
-    "text": "My boyfriend (27M) seems to hate everything about me (26F). Me (26F) and\u00a0my boyfriend (27M) have been together for five months. We are long-distance most of the time because of my career atm.\n\nHe hates my career. He knew who I was before he met me. He knew I performed, toured, recorded, did interviews, and had deadlines. He said it didn\u2019t bother him. I\u2019ve been doing things in the public eye since I was thirteen, but he sees it as such a threat. He hates the attention, hates the time it requires, and constantly tells me he wants me to \u201cput more effort into him\" and not my career. He generally hates the industry and all of my friends in it. He criticizes their work nonstop\u2014musicians, actors, creatives\u2014people he has never met. He also said I have such good music taste, and he doesn't understand why I make \"Taylor Swift pop music\" or why I associate with Taylor Swift at all.\n\nHe's extremely private, which honestly makes no sense given my public life. He didn't want me telling parents or fr",
+    "text": "29F My mom is a hoarder and in denial. I (29F) have recently learned my mom (64F) is a hoarder. She collects used items (bottles) old mail, doesn\u2019t throw away spoiled food items even though there\u2019s mold and fruit flies, has mouse turds all around her house without ever cleaning them, has boxes upon boxes of unopened items, closets full of clothes that have never been worn, junk covering every surface in her house, and dog poo and pee all over the floors. It smells rancid \n\nHer house is disgusting, despite her living in one of the richest neighborhoods in California. I brought this up to her as I was helping her sort thru things before she moves into an apartment from a huge house. She would hardly give away anything, then she got a storage unit for things she hasn\u2019t used in over a decade. \n\nShe completely denies she has a problem. I pointed out spoiled food and she shrugged, still hasn\u2019t cleaned it up. Never appears embarrassed about it. She told me I was overreacting and it isn\u2019t that",
     "source": "reddit_relationships",
-    "model_predictions": [
-      {
-        "text": "Taylor",
-        "label": "PERSON",
-        "start": 815,
-        "end": 821
-      },
-      {
-        "text": "Taylor",
-        "label": "PERSON",
-        "start": 863,
-        "end": 869
-      }
-    ],
+    "model_predictions": [],
     "true_entities": [],
     "notes": "",
     "annotation_status": "pending"
   },
   {
     "id": 6,
-    "text": "I (27F) love my boyfriend (32M) but our cleaning differences are destroying me emotionally. I don\u2019t know what to do.. For context: I met my boyfriend almost 8 years ago. He\u2019d just moved into my building, and this happened about a month after my mom passed away from cancer. I inherited her condo, and I was 19 at the time, still in school for several years. I was vulnerable back then and very careful about who I let into my life. He eventually became my first boyfriend.\n\nWe were neighbours for about 3 years before we officially got together. At the beginning, he wanted to know me and be friends, and he often invited me for board games, walk, etc, but I refused, and he respected that. During that time, he had other relationships and acquaintances, mostly with younger women (at least 3). I only saw one woman from his age, and it didn't last long. Eventually, we developed feelings for each other when he was single (I was 22), and we\u2019ve now been together for 5 years.\n\nDespite that, we never ",
+    "text": "I (26m) have been dating my gf (26f) for 4 years. I have grad school coming up.. Hi all. My gf and I currently live in a big city. We met in college and I moved here for her. Her career aspirations are centrally located in this city. So she needs to be in the area. I have happily lived here for 4 years.\n\nHowever, I am hitting a dead end in my corporate job and have dreams of going into my preferred field. This will require grad school. I have 2 programs in mind. One on the other side of the country which is my dream school and the other about 2 hours away from where we currently live. If accepted, I plan to start Fall 2027.\n\nI bought up our future plans together because it was causing some tension. She never seems to want to talk about the subject, which I get but it has caused me so much anxiety living in limbo. We chatted about where we want to be down the line.\n\nI told her I want to go to grad school. I brought up that it would only be for 2 years max and that I\u2019d return to the city",
     "source": "reddit_relationships",
     "model_predictions": [],
     "true_entities": [],
@@ -157,16 +90,59 @@
   },
   {
     "id": 7,
-    "text": "22F, never kissed anyone about to meet a 26M and terrified.. TL;DR: 22F, never kissed anyone, about to meet a 26M I\u2019ve been talking to online. Nervous about being inexperienced and not sure if I should tell him. Seeking advice, especially from men 25\u201330, about how they would feel being someone\u2019s first kiss.\n\nI feel like a 13-year-old girl writing this. It\u2019s kind of ridiculous, but I honestly don\u2019t know what to do. I\u2019m 22 and I\u2019ve never kissed anyone. Never dated, never had anything with anyone. Sometimes I feel like this makes me seem like an \u201cadult fraud,\u201d as if I emotionally stopped at 13 while everyone else grew up, lived, had experiences\u2026 and I was left behind, behind in everything.\n\nI\u2019ve always been extremely shy. A shyness that might seem \u201ccute\u201d to outsiders, but for me it\u2019s paralyzing. I stutter, forget what to say, and it feels like no words exist in my vocabulary. I\u2019m working on this (but it\u2019s still very difficult). The weirdest part is I don\u2019t know where it comes from because",
+    "text": "Friend owes me money for a trip and keeps ignoring me. Not sure where our friendship stands now.. I (22F) recently planned a small post birthday getaway with two friends, let\u2019s call them Emily (22F) and Sasha (22F). I was the one who booked the accommodation, paid upfront, organised the trip with some help from Sasha here and there. \n\nBefore the trip, Emily told me she didn\u2019t have money for her share yet. I was a little worried, but because she really wanted to come for my birthday and I didn\u2019t want drama (mind you we had a fight a few months back), I said I\u2019d cover her and she could pay me back. Her portion for the stay was about R900, but since she didn\u2019t end up staying the full 3 nights, I told her she could just pay me R600-R700 Or whatever she felt comfortable with. \n\nHere\u2019s the part that stings:\nOn the way to the trip, Sasha (my other friend) travelled with Emily because they live closer. She told me that she literally saw and heard Emily\u2019s mom transfer the money into Emily\u2019s acc",
     "source": "reddit_relationships",
-    "model_predictions": [],
+    "model_predictions": [
+      {
+        "text": "I",
+        "label": "PERSON",
+        "start": 98,
+        "end": 99
+      },
+      {
+        "text": "two",
+        "label": "PERSON",
+        "start": 158,
+        "end": 161
+      },
+      {
+        "text": "Emily",
+        "label": "PERSON",
+        "start": 187,
+        "end": 192
+      },
+      {
+        "text": "Sasha",
+        "label": "PERSON",
+        "start": 203,
+        "end": 208
+      },
+      {
+        "text": "Emily",
+        "label": "PERSON",
+        "start": 354,
+        "end": 359
+      },
+      {
+        "text": "Sasha",
+        "label": "PERSON",
+        "start": 837,
+        "end": 842
+      },
+      {
+        "text": "Emily",
+        "label": "PERSON",
+        "start": 953,
+        "end": 958
+      }
+    ],
     "true_entities": [],
     "notes": "",
     "annotation_status": "pending"
   },
   {
     "id": 8,
-    "text": "His sex drive became nonexistent and it's driving me crazy. My partner (25M) and I (25F) have been together for 4 years. He is incredible and I love him more than anything else. He is not under stress and exercises regularly.\n\nThe first year we were together, we couldn't keep our hands off of eachother, which I understand is common in new-ish relationships before it slows down into a more natural rhythm. \n\nThe problem is, after we hit the 1 year mark, his libido has completely vanished. We've had countless conversations about how he never wants to be intimate anymore and it really frustrates me, but I don't see any long-term solutions or effort from his end except a \"I just don't have a high sex drive\" from him. At first, he'd say that he's tired from work, had a long day, or that its very late. After we moved in together, it hasn't been any different. I've completely stopped initiating because he rejects me 9.5/10 times and over time I've started feeling resentful about it because he ",
+    "text": "Ex (30m) disregarded me (27f) often, does this mean he hated. My last ex who I cared about deeply.. sometimes would do some completely self centred stuff.. some traumatic ones are sexual examples like I got a terrible sunburn on half my body and he style pushed for sex right after.. another time I was in pain during sex and trying to push him away and wincing multiple times and he kept going\u2026a few examples of being in emotional pain because of something he said or did and being ignored or avoided by him.. being told by him that me being upset wasn\u2019t his problem the first time he essentially broke up with me,  calling my outfit bad when I looked beautiful.. much more beautiful than I look now after being beaten down.. was this someone who hated me? Why was he with me? I can\u2019t wrap my mind around why he treated me this\n\nTl;dr : my 27f ex 30m disregarded me and put me down often, why was he with me?",
     "source": "reddit_relationships",
     "model_predictions": [],
     "true_entities": [],
@@ -175,7 +151,7 @@
   },
   {
     "id": 9,
-    "text": "My girlfriend(20F) wants to break up over something small, and I(23M) feel like I\u2019m walking on eggshells. What should I do?. I\u2019ve been with my girlfriend for over a year. We\u2019ve gotten really serious. I introduced her to my family, I\u2019m focused on my career, and I genuinely want a future with her. While everyone around me is enjoying uni life, I\u2019m trying to build stability so I can marry her someday.\n\nRecently we had a fight over something that feels small but turned into something huge.\n\nI have an exam coming up in a week. One evening, I went to sleep and asked her to wake me up. She did, but after saying \u201clet\u2019s talk later,\u201d I accidentally fell asleep again. When I woke up, I told her I had a headache and slept through it. That\u2019s when she got really mad \u2014 short replies like \u201chm\u201d and \u201ck,\u201d acting cold, barely talking.\n\nI apologized multiple times and explained myself, but nothing helped. When I asked what exactly I did wrong, she started shouting at me but wouldn\u2019t tell me why she was ups",
+    "text": "F26: Struggling with parents who don\u2019t want me going out. Need advice.. I\u2019m 26, turning 27 soon, and still living with my parents. I work from home. I grew up pretty introverted and barely left the house, but now I want to go out - meet friends, see my boyfriend, actually have a life.\n\nMy mom knows about my boyfriend but she isn\u2019t thrilled about it. My parents aren\u2019t super strict in general, but the idea of me going out makes them uncomfortable. Even meeting friends twice a month feels like a big negotiation. Seeing my boyfriend more than twice a month is impossible.\n\nIt\u2019s starting to really get to me. I feel trapped in my own home. I do plan on getting a job in another city and moving out, but that\u2019ll take some time.\n\nAny advice on how to make my life easier until then? How do I manage this without losing my mind?\n\n**TL;DR:** Living with parents at 26, but they strongly limit my social life. Can\u2019t go out much, can\u2019t see my BF often. Looking for advice on coping until I move out.",
     "source": "reddit_relationships",
     "model_predictions": [],
     "true_entities": [],

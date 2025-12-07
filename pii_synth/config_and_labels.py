@@ -15,7 +15,7 @@ HARDNEG_RATIO = 0.12
 
 #  TOKENIZER
 TOKENIZER_NAME = "microsoft/deberta-base"
-MAX_LENGTH = 256
+MAX_LENGTH = 512  # Allow variable lengths, don't force all to be same
 
 #  NOISE / TYPO CONFIG (outside spans)
 NOISE_CHAR_SUB_PROB = 0.03  # random replacement

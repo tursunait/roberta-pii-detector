@@ -13,6 +13,25 @@ print("Starting Real-World Evaluation with the trained model")
 current_dir = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(current_dir, "..", "model", "my_trained_pii_model")  
 
+# Check the BILOU Labels
+from transformers import AutoModelForTokenClassification
+
+# Load your trained model
+model = AutoModelForTokenClassification.from_pretrained("./model/my_trained_pii_model")
+
+# Check the labels
+print("=" * 60)
+print("🏷️ YOUR MODEL'S LABELS:")
+print("=" * 60)
+
+print(f"\nTotal number of labels: {len(model.config.id2label)}")
+
+print("\nLabel ID → Label Name:")
+for label_id, label_name in sorted(model.config.id2label.items()):
+    print(f"  {label_id:2d}: {label_name}")
+
+print("\n" + "=" * 60)
+
 def load_model_and_labels(model_path):
     """Load model and extract label mappings"""
     try:
@@ -39,10 +58,15 @@ def load_model_and_labels(model_path):
             # Default PII labels (adjust based on your training)
             print("Using default PII labels")
             default_labels = [
-                'O', 'B-PERSON', 'I-PERSON', 'B-EMAIL', 'I-EMAIL', 
-                'B-PHONE', 'I-PHONE', 'B-ADDRESS', 'I-ADDRESS', 
-                'B-SSN', 'I-SSN', 'B-CREDIT_CARD', 'I-CREDIT_CARD', 
-                'B-DATE', 'I-DATE', 'B-ORG', 'I-ORG'
+                'O',
+                'B-EMAIL', 'I-EMAIL', 'L-EMAIL', 'U-EMAIL',
+                'B-PHONE', 'I-PHONE', 'L-PHONE', 'U-PHONE',
+                'B-SSN', 'I-SSN', 'L-SSN', 'U-SSN',
+                'B-CREDIT_CARD', 'I-CREDIT_CARD', 'L-CREDIT_CARD', 'U-CREDIT_CARD',
+                'B-PERSON', 'I-PERSON', 'L-PERSON', 'U-PERSON',
+                'B-ORG', 'I-ORG', 'L-ORG', 'U-ORG',
+                'B-ADDRESS', 'I-ADDRESS', 'L-ADDRESS', 'U-ADDRESS',
+                'B-DATE', 'I-DATE', 'L-DATE', 'U-DATE'
             ]
             ID2LABEL = {i: label for i, label in enumerate(default_labels)}
             LABEL2ID = {v: k for k, v in ID2LABEL.items()}
@@ -167,7 +191,8 @@ def predict_entities_advanced(texts, model, tokenizer, id2label):
         try:
             # Tokenize with return_offsets_mapping to get character positions
             inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=512, 
-                              return_offsets_mapping=True, padding=True)
+                              return_offsets_mapping=True, padding=False)
+
             
             # Get offset mapping (character positions for each token)
             offset_mapping = inputs.pop('offset_mapping')[0].cpu().numpy()  # Convert to numpy array
@@ -642,3 +667,4 @@ if manual_metrics:
 
 
 print(f"\n Evaluation pipeline finished successfully!")
+

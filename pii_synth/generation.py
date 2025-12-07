@@ -58,6 +58,19 @@ TEMPLATES = [
     "You can reach {person} ({org}) via {email}.",
     "Meeting on {date}. Call {phone} if late.",
     "Invoice to {org}, attention {person}, address {address}.",
+
+     # NEW REDDIT-STYLE TEMPLATES:
+    "yo anyone know how to contact {person}? their email is {email}",
+    "just got scammed by {org}, card ending in {credit_card}",
+    "DM me at {email} if interested",
+    "{person} is legit, bought from them yesterday",
+    "don't share ur ssn like {ssn} online smh",
+    "hmu at {email} or call {phone}",
+    "does anyone have {person}'s contact info? maybe {email}?",
+    "shipping to {address}, hope it arrives by {date}",
+    "{org} charged my card {credit_card} without permission wtf",
+    "my phone is {phone} if u need to reach me",
+    "contact info: {person}, {email}, {phone}",
 ]
 
 
@@ -91,6 +104,49 @@ def fill_template(template: str, fake: Faker) -> Tuple[str, Dict[str, Tuple[int,
 
     return text, spans
 
+def generate_variable_length_text(fake: Faker) -> PIIExample:
+    """Generate text of varying lengths"""
+    length_type = random.choice(['short', 'medium', 'long'])
+    
+    if length_type == 'short':
+        # 20-60 tokens: simple sentence
+        return build_positive_example(fake)
+    elif length_type == 'medium':
+        # 60-150 tokens: paragraph (2-3 templates combined)
+        num_templates = random.randint(2, 3)
+        texts = []
+        all_spans = []
+        cursor = 0
+        
+        for _ in range(num_templates):
+            ex = build_positive_example(fake)
+            texts.append(ex.text)
+            # Adjust span positions
+            for span in ex.spans:
+                span['start'] += cursor
+                span['end'] += cursor
+            all_spans.extend(ex.spans)
+            cursor += len(ex.text) + 1  # +1 for space
+        
+        return PIIExample(text=' '.join(texts), spans=all_spans)
+    else:
+        # 150-400 tokens: long post (4-7 templates combined)
+        num_templates = random.randint(4, 7)
+        texts = []
+        all_spans = []
+        cursor = 0
+        
+        for _ in range(num_templates):
+            ex = build_positive_example(fake)
+            texts.append(ex.text)
+            # Adjust span positions
+            for span in ex.spans:
+                span['start'] += cursor
+                span['end'] += cursor
+            all_spans.extend(ex.spans)
+            cursor += len(ex.text) + 1  # +1 for space
+        
+        return PIIExample(text=' '.join(texts), spans=all_spans)
 
 #  NOISE / TYPOS (OUTSIDE SPANS)
 
@@ -173,6 +229,57 @@ def apply_noise_outside_spans(text: str, spans: List[Tuple[int, int]]) -> str:
 
     return "".join(chars)
 
+# Add noise INSIDE PII spans
+def apply_noise_to_pii(text: str, spans: List[Tuple[int, int]], noise_prob=0.1) -> str:
+    """Add realistic noise/typos to PII itself"""
+    chars = list(text)
+    
+    for span_idx, (s, e) in enumerate(spans):
+        if random.random() < noise_prob:
+            # Get the PII text
+            pii_text = text[s:e]
+            
+            # Apply different types of realistic noise
+            noise_type = random.choice(['typo', 'spacing', 'case'])
+            
+            if noise_type == 'typo':
+                # Common typos: gmail -> gmial, yahoo -> yaho
+                pii_text = pii_text.replace('gmail', 'gmial')
+                pii_text = pii_text.replace('yahoo', 'yaho')
+                pii_text = pii_text.replace('com', 'con')
+            elif noise_type == 'spacing':
+                # Add extra spaces in phone/SSN: 555-1234 -> 555 - 1234
+                pii_text = pii_text.replace('-', ' - ')
+                pii_text = pii_text.replace('.', ' . ')
+            elif noise_type == 'case':
+                # Random case changes
+                pii_text = ''.join([c.upper() if random.random() < 0.3 else c.lower() for c in pii_text])
+            
+            # Replace in the character list
+            chars[s:e] = list(pii_text)
+    
+    return ''.join(chars)
+
+def obfuscate_email(email: str) -> str:
+    """Create obfuscated email versions"""
+    variants = [
+        email.replace('@', ' at ').replace('.', ' dot '),
+        email.replace('@', '[at]').replace('.', '[dot]'),
+        email.replace('@', ' @ ').replace('.', ' . '),
+        email.replace('@', '(at)').replace('.', '(dot)'),
+    ]
+    return random.choice(variants)
+
+def obfuscate_phone(phone: str) -> str:
+    """Create obfuscated phone versions"""
+    # Remove formatting and add spaces
+    digits = ''.join(c for c in phone if c.isdigit())
+    variants = [
+        ' '.join(digits),  # "5 5 5 1 2 3 4"
+        '-'.join([digits[i:i+3] for i in range(0, len(digits), 3)]),  # "555-123-4"
+        digits[:3] + ' ' + digits[3:6] + ' ' + digits[6:],  # "555 123 4567"
+    ]
+    return random.choice(variants)
 
 #  HARD NEGATIVES (HASHES, GUID, INVALID CARDS, HANDLES, ETC.)
 
@@ -206,10 +313,36 @@ def sample_hard_negative(fake: Faker) -> str:
 #  EXAMPLE BUILDERS
 
 
+# def build_positive_example(fake: Faker) -> PIIExample:
+#     template = fake.random_element(TEMPLATES)
+#     text, field_spans = fill_template(template, fake)
+
+#     field2label = {
+#         "person": "PERSON",
+#         "org": "ORG",
+#         "address": "ADDRESS",
+#         "email": "EMAIL",
+#         "phone": "PHONE",
+#         "ssn": "SSN",
+#         "credit_card": "CREDIT_CARD",
+#         "date": "DATE",
+#     }
+
+#     spans: List[Dict[str, Any]] = []
+#     char_spans: List[Tuple[int, int]] = []
+
+#     for field, (s, e) in field_spans.items():
+#         label = field2label[field]
+#         spans.append({"start": s, "end": e, "label": label})
+#         char_spans.append((s, e))
+
+#     noisy_text = apply_noise_outside_spans(text, char_spans)
+#     return PIIExample(text=noisy_text, spans=spans)
+
 def build_positive_example(fake: Faker) -> PIIExample:
     template = fake.random_element(TEMPLATES)
     text, field_spans = fill_template(template, fake)
-
+    
     field2label = {
         "person": "PERSON",
         "org": "ORG",
@@ -220,18 +353,36 @@ def build_positive_example(fake: Faker) -> PIIExample:
         "credit_card": "CREDIT_CARD",
         "date": "DATE",
     }
-
+    
     spans: List[Dict[str, Any]] = []
     char_spans: List[Tuple[int, int]] = []
-
+    
     for field, (s, e) in field_spans.items():
         label = field2label[field]
+        
+        # Randomly obfuscate emails and phones (20% of the time)
+        if label == "EMAIL" and random.random() < 0.2:
+            original = text[s:e]
+            obfuscated = obfuscate_email(original)
+            text = text[:s] + obfuscated + text[e:]
+            e = s + len(obfuscated)
+        elif label == "PHONE" and random.random() < 0.2:
+            original = text[s:e]
+            obfuscated = obfuscate_phone(original)
+            text = text[:s] + obfuscated + text[e:]
+            e = s + len(obfuscated)
+        
         spans.append({"start": s, "end": e, "label": label})
         char_spans.append((s, e))
-
+    
+    # Apply noise outside spans
     noisy_text = apply_noise_outside_spans(text, char_spans)
+    
+    # Apply noise inside PII (10% probability)
+    if random.random() < 0.1:
+        noisy_text = apply_noise_to_pii(noisy_text, char_spans, noise_prob=0.15)
+    
     return PIIExample(text=noisy_text, spans=spans)
-
 
 def build_o_only_example(fake: Faker) -> PIIExample:
     """
@@ -281,7 +432,7 @@ def generate_jsonl(
     with out_path.open("w", encoding="utf-8") as f:
         # positive PII examples
         for _ in range(n_pos):
-            ex = build_positive_example(FAKE)
+            ex = generate_variable_length_text(FAKE)  # CHANGED: Use variable length
             f.write(
                 json.dumps({"text": ex.text, "spans": ex.spans}, ensure_ascii=False)
                 + "\n"
@@ -300,3 +451,4 @@ def generate_jsonl(
             f.write(
                 json.dumps({"text": ex.text, "spans": []}, ensure_ascii=False) + "\n"
             )
+
