@@ -31,5 +31,9 @@
   "B-DATE": 29,
   "I-DATE": 30,
   "L-DATE": 31,
-  "U-DATE": 32
+  "U-DATE": 32,
+  "B-AGE": 33,
+  "I-AGE": 34,
+  "L-AGE": 35,
+  "U-AGE": 36
 }

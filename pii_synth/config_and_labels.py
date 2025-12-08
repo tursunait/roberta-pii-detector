@@ -9,18 +9,18 @@ VAL_RATIO = 0.1  # test = 0.1
 
 #  POS/NEG RATIOS
 # fraction of records that are all-O (no spans)
-O_ONLY_RATIO = 0.22
+O_ONLY_RATIO = 0.50
 # fraction that are “hard negatives” (hashes, GUIDs, invalid cards etc.)
-HARDNEG_RATIO = 0.12
+HARDNEG_RATIO = 0.15
 
 #  TOKENIZER
 TOKENIZER_NAME = "microsoft/deberta-base"
 MAX_LENGTH = 512  # Allow variable lengths, don't force all to be same
 
 #  NOISE / TYPO CONFIG (outside spans)
-NOISE_CHAR_SUB_PROB = 0.03  # random replacement
-NOISE_SWAP_PROB = 0.01  # random adjacent swap
-NOISE_CASE_PROB = 0.02  # random upper/lower flip
+NOISE_CHAR_SUB_PROB = 0.08  # random replacement
+NOISE_SWAP_PROB = 0.03  # random adjacent swap
+NOISE_CASE_PROB = 0.05  # random upper/lower flip
 
 #  ENTITY LABELS (BILOU)
 ENTITY_TYPES = [
@@ -32,11 +32,14 @@ ENTITY_TYPES = [
     "ORG",
     "ADDRESS",
     "DATE",
+    "AGE",
 ]
 
 LABEL_LIST = ["O"]
 for ent in ENTITY_TYPES:
     LABEL_LIST += [f"B-{ent}", f"I-{ent}", f"L-{ent}", f"U-{ent}"]
+
+
 
 LABEL2ID = {lab: i for i, lab in enumerate(LABEL_LIST)}
 ID2LABEL = {i: lab for lab, i in LABEL2ID.items()}
