@@ -114,105 +114,189 @@ This produces:
 * `data/raw/pii.jsonl`
 * HF tokenized dataset → `data/processed/`
 * CoNLL files for debugging
-
+  
 ---
 
-## **Model Training (RoBERTa)**
+# **Model Architecture & Training**
 
-A transformer model is fine-tuned for token classification with **BILOU labels**.
-
-### Training configuration
-
-* Learning rate: `2e-5`
-* Epochs: `2–3`
-* Batch size: `8` (with gradient accumulation)
-* Max sequence length: `256–512`
-* Total labels: **B-I-L-U-O for 9 entity classes**
-
-### Checkpoints
+All model training for this project is performed using **RoBERTa-base** fine-tuned for token classification. The training pipeline is defined in `model.ipynb`, and all exported model artifacts are stored in:
 
 ```
-model/my_trained_pii_model/
+trained_model/
+    config.json
+    vocab.json
+    merges.txt
+    tokenizer.json
+    tokenizer_config.json
+    special_tokens_map.json
 ```
 
----
+These files allow the model and tokenizer to be loaded directly through Hugging Face:
 
-## **Evaluation Pipeline**
+```python
+from transformers import AutoTokenizer, AutoModelForTokenClassification
 
-Evaluation includes both **quantitative** and **qualitative** components.
-
-### **1. Synthetic evaluation (large test set)**
-
-* Exact-span and entity-level metrics
-* Measures robustness against noise and obfuscations
-
-### **2. Real-world Reddit evaluation**
-
-* Posts from various subreddits: relationships, jobs, personalfinance, etc.
-* Model used in inference mode
-* Manually annotated spans provided to allow the computation of real-world precision/recall
-
-### **Run evaluation**
-
-```bash
-python evaluation/model_evaluation.py
+tokenizer = AutoTokenizer.from_pretrained("trained_model/")
+model = AutoModelForTokenClassification.from_pretrained("trained_model/")
 ```
 
-Outputs saved as:
+### **Why RoBERTa-base?**
 
-* `stage3_complete_evaluation.json`
-* `reddit_manual_annotation.json`
+RoBERTa-base was selected because it:
 
----
+* Performs strongly on token classification & NER
+* Handles noisy, informal text better than rule-based approaches
+* Offers a good performance–cost balance for limited GPU budgets
+* Has strong contextual reasoning needed for messy/obfuscated PII formats
 
-## **Results Snapshot**
+### **Labeling Scheme**
 
-*(Example numbers—replace with final results after retraining)*
+The model predicts **33 BILOU tags** corresponding to the following eight PII categories:
 
-### **Synthetic evaluation**
+`EMAIL, PHONE, SSN, CREDIT_CARD, PERSON, ORG, ADDRESS, DATE`
 
-Models generally perform well on synthetic data but reveal:
+### **Training Configuration**
 
-* Boundary sensitivity under heavy in-span corruption
-* Strong performance on EMAIL, PHONE, CREDIT_CARD
-* More difficulty with ADDRESS and ORG (high variety)
+| Hyperparameter        | Value  | Rationale                                                      |
+| --------------------- | ------ | -------------------------------------------------------------- |
+| Learning rate         | `2e-5` | Standard for transformer fine-tuning, stable on small datasets |
+| Epochs                | 2      | Avoid overfitting on 6,000 training samples                    |
+| Batch size            | 8      | GPU memory constraints                                         |
+| Gradient accumulation | 4      | Simulates batch size of 32                                     |
+| Max sequence length   | 256    | Matches typical user-generated text length                     |
 
-### **Reddit qualitative evaluation**
+Training was performed on a single GPU and completed in ~30 minutes.
 
-The model:
+### **Dataset Used for Training**
 
-* Identifies obfuscated and noisy PII in a subset of posts
-* Exhibits lower recall due to novel templates and multi-sentence context
-* Shows promising generalization despite training purely on synthetic text
+Due to compute limits, the model was trained on a **6,000-example subset** of the full 96k synthetic dataset originally generated.
+Data generation components live in:
 
-### **Latency**
+```
+pii_synth/
+    generation.py
+    build_datasets.py
+    config_and_labels.py
+    write_conll.py
+    synth_data.py
+```
 
-~20–30 ms per text on CPU
-(<5 ms on GPU)
+The synthetic dataset uses:
 
----
-
-## **Known Limitations**
-
-* Synthetic distribution may not fully match real-world logs
-* Exact-span scoring is harsh for privacy tasks
-* No multi-sentence coreference resolution
-* Very extreme obfuscations may still be missed
-
----
-
-## **Next Steps**
-
-* Expand template library with adversarial examples
-* Add IoU / token-overlap metrics to measure “practical privacy protection”
-* Distill the model into an on-device browser-ready version
-* Integrate with a Chrome/Firefox extension for real-time masking
-* Explore multilingual synthetic generation
+* Faker-generated identifiers
+* Regex-constructed structured numbers
+* Template-based text
+* Noise injection (typos, spacing distortions, digit swaps)
+* Hard negatives (UUIDs, hashes, non-PII numeric strings)
 
 ---
 
-## **License**
+# **Evaluation Pipeline**
 
-MIT License.
-See `LICENSE`.
+Evaluation scripts and results are located in:
 
+```
+evaluation/
+    model_evaluation.py
+    evaluations_results.json
+```
+
+`model_evaluation.py` runs **both synthetic** and **real-world** tests and produces:
+
+* Entity-level precision, recall, and F1
+* Over-prediction and under-prediction statistics
+* Boundary-accuracy diagnostics
+
+The final evaluation metrics (synthetic & real-world) used in the report were computed using this script.
+
+---
+
+## **1. Synthetic Evaluation**
+
+The synthetic test set contains ~600 examples generated by the same pipeline as training data.
+
+Key findings:
+
+* Overall accuracy: **99.85%**
+* Weighted average F1: **99.04%**
+* Strong performance on EMAIL, DATE, CREDIT_CARD, ORG
+* Weaker performance on ADDRESS, AGE, SSN due to span variability
+
+Synthetic results confirm that the model successfully learns the patterns present in the synthetic corpus, but these numbers **do not** reflect performance in real-world environments due to domain shift.
+
+---
+
+## **2. Real-World Evaluation (ai4privacy Dataset)**
+
+To measure real-world generalization, we used **600 real Reddit posts** from the
+`ai4privacy/pii-masking-300k` dataset.
+
+Because this dataset uses **BIO** tags, we mapped them to **BILOU** during evaluation.
+
+### **Initial Performance**
+
+* Precision: **17%**
+* Recall: **21%**
+* F1-score: **19%**
+* Model predicted **5× too many entities**
+
+This showed that the model was extremely over-aggressive on noisy human text.
+
+### **Refined Results After Improving Synthetic Data**
+
+After expanding synthetic templates and adding partial-address patterns:
+
+* Precision: **28%**
+* Recall: **45%**
+* F1-score: **37%**
+
+Despite improvements, the model still predicted **6.5× more entities** than actually existed.
+
+### **Entity-Level F1**
+
+| Entity  | F1   |
+| ------- | ---- |
+| EMAIL   | 0.89 |
+| DATE    | 0.55 |
+| PHONE   | 0.35 |
+| PERSON  | 0.33 |
+| SSN     | 0.28 |
+| ADDRESS | 0.28 |
+
+### **Observed Error Modes**
+
+* **Over-prediction**: dominant failure mode; O-tag discrimination is weak
+* **Boundary errors**: incomplete spans for PHONE, SSN, or credit cards
+* **Address mismatch**: real data uses address *components*, synthetic uses *full addresses*
+* **Domain shift**: real-world text contains context clues & semantics missing from synthetic data
+
+---
+
+## **3. Inference Latency**
+
+Average latency (CPU):
+
+* **24.45 ms** per sequence (max ~256 tokens)
+
+Fast enough for **near-real-time masking** in chat interfaces or preprocessing pipelines.
+
+---
+
+## **Limitations**
+
+* Training used only **6k** examples due to compute limits
+* Over-prediction caused by class imbalance and lack of real-world negatives
+* Synthetic data did not fully match real-world distribution
+* Limited hyperparameter exploration
+* Span detection remains challenging for structured identifiers
+
+---
+
+## **Future Directions**
+
+* Train on full 96k–120k synthetic dataset
+* Introduce class-weighted or focal loss to reduce over-prediction
+* Improve synthetic generator with more fine-grained address/components
+* Add adversarial obfuscations and contextual distractors
+* Distill model for browser/in-device deployment
+* Human-in-the-loop feedback loops for iterative correction
