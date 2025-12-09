@@ -216,4 +216,3 @@ The model:
 MIT License.
 See `LICENSE`.
 
-Would you like any of these?
