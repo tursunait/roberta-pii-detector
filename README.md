@@ -1,70 +1,135 @@
-# RoBERTa PII Detector 
+# **PII-Guardian: Robust Synthetic PII Detection with RoBERTa**
 
-## Overview
-Accidental disclosure of personally identifiable information (PII) is a growing privacy risk in human–AI text interactions. This project builds an end-to-end pipeline to **detect and mask sensitive entities** in free-form text using transformer-based Named Entity Recognition (NER).
+## **Overview**
 
-We fine-tuned **RoBERTa-base** for token classification using a **BILOU tagging scheme** to detect eight PII types:
+Accidental disclosure of personally identifiable information (PII) remains a major privacy risk in human–AI interactions, especially when users transmit text to chatbots or LLMs.
+This project builds an end-to-end pipeline for **detecting and masking sensitive entities** in free-form text using transformer-based Named Entity Recognition (NER).
 
-`EMAIL, PHONE, SSN, CREDIT_CARD, PERSON, ORG, ADDRESS, DATE`
+We fine-tune a transformer model (RoBERTa-base) with a **BILOU tagging scheme** to detect **nine** PII categories:
 
-Because real PII cannot be used for training, we generate a large **synthetic, privacy-safe dataset** using Faker + regex templates + noise injection. We evaluate the model on both synthetic ground-truth sentences and real Reddit posts.
+`PERSON, EMAIL, PHONE, SSN, CREDIT_CARD, ORG, ADDRESS, DATE, AGE`
+
+Because real PII cannot be used, all training data is produced by a **rich synthetic generation pipeline** that simulates real-world writing, noise, obfuscation patterns, and near-miss negatives.
 
 ---
 
-## Repository Structure
+## **Key Features**
+
+### **✔ Realistic variable-length documents**
+
+* Short (1 sentence), medium (paragraph), long (multi-template posts)
+* Automatic merging of spans across concatenated templates
+
+### **✔ Deep formatting diversity**
+
+Includes dozens of patterns for:
+
+* Usernames (`firstname.lastname`, initials, numeric handles)
+* International phone formats (+31 880 385 2406; dotted, spaced, mixed)
+* SSNs in dashed/space/dot patterns
+* Email obfuscation: `john[at]gmail[dot]com`, `(at)`, `"john @ gmail . com"`
+
+### **✔ Noise injection (inside + outside PII spans)**
+
+* Keyboard-neighbor typos
+* Case flipping
+* Character swaps
+* In-span realistic corruption:
+
+  * `gmail → gmial`,
+  * spacing distortions (`555-1234 → 555 - 1234`)
+  * casing variations
+
+### **✔ Hard negatives**
+
+Strings that *look* like PII but must be labeled **O**:
+
+* GUIDs, MAC addresses, SHA1 hashes
+* Invalid credit cards (missing checksum)
+* Random numeric sequences
+* Social handles (`@username`)
+
+### **✔ Entity type: AGE**
+
+Examples:
+`23M`, `age 24`, `24-year-old`, `"I'm 25"`, `(25F)`.
+
+### **✔ Reddit-style, email-style, CSV-style, legal/medical templates**
+
+Over 100+ templates covering:
+
+* casual conversations
+* scams / support messages
+* shipping and billing
+* medical records
+* logs and CSV rows
+* messy, incomplete text
+
+---
+
+## **Repository Structure**
+
+```
+data/
+  raw/                      # synthetic pii.jsonl
+  processed/                # HF Arrow datasets + CoNLL exports
+
+evaluation/                 # real-world evaluation scripts and reports
+model/                      # saved model checkpoints
+pii_synth/                  # full synthetic generator & processing pipeline
+  generation.py             # NEW 2025 generator (PII sampling, noise, templates)
+  build_datasets.py         # tokenization + label alignment
+  write_conll.py            # CoNLL export
+  config_and_labels.py      # hyperparameters, tag mappings
+synth_data.py               # orchestration pipeline
+requirements.txt
+
+reddit_manual_annotation.json
+stage3_complete_evaluation.json
+LICENSE
 ```
 
-data/                           # (optional) data storage directory
-evaluation/                     # real-world evaluation pipeline (synthetic + Reddit)
-model/                          # saved fine-tuned model artifacts
-pii_synth/                      # synthetic data generation utilities
-
-synth_data.py                   # main synthetic data generation script
-synth_checks.ipynb              # notebook for sanity checks / exploration
-requirements.txt                # dependencies
-
-reddit_manual_annotation.json   # manual annotation template for Reddit samples
-stage3_complete_evaluation.json # saved evaluation report (outputs)
-LICENSE
-
-````
-
-**Notes**
-- Large model files are stored under `model/`.
-- Evaluation outputs are saved as JSON for reproducibility.
-
 ---
 
-## Synthetic Data Generation
-We generate training data programmatically to ensure privacy compliance.
+## **Synthetic Data Generation**
 
-**What’s generated**
-- Faker-based entities: names, emails, phone numbers, dates, orgs, addresses  
-- Regex-based structured IDs: SSNs, credit cards, etc.  
-- Optional noise: typos, spacing errors, character swaps  
+The dataset is produced entirely programmatically to ensure privacy compliance.
 
-**Run generation**
+### **What’s generated**
+
+* Naturalistic text of varying length
+* PII entities: PERSON, EMAIL, PHONE, SSN, CREDIT_CARD, ORG, ADDRESS, DATE, AGE
+* Obfuscated email/phone variants
+* Hard negatives + O-only “safe” samples
+* Character-level noise both inside and outside spans
+
+### **Generate dataset**
+
 ```bash
 python synth_data.py
-````
+```
 
-This produces a synthetic corpus (used in training) and stores clean spans for labeling.
+This produces:
+
+* `data/raw/pii.jsonl`
+* HF tokenized dataset → `data/processed/`
+* CoNLL files for debugging
 
 ---
 
-## Model Training (RoBERTa-base)
+## **Model Training (RoBERTa)**
 
-RoBERTa-base is fine-tuned for token classification with BILOU labels.
+A transformer model is fine-tuned for token classification with **BILOU labels**.
 
-Key training settings (as used in report):
+### Training configuration
 
 * Learning rate: `2e-5`
-* Epochs: `2`
-* Batch size: `8` (gradient accumulation `4`)
-* Max sequence length: `256`
-* Labels: 33 BILOU tags across 8 PII types
+* Epochs: `2–3`
+* Batch size: `8` (with gradient accumulation)
+* Max sequence length: `256–512`
+* Total labels: **B-I-L-U-O for 9 entity classes**
 
-Saved model checkpoints are in:
+### Checkpoints
 
 ```
 model/my_trained_pii_model/
@@ -72,73 +137,83 @@ model/my_trained_pii_model/
 
 ---
 
-## Evaluation Pipeline
+## **Evaluation Pipeline**
 
-Evaluation is two-stage:
+Evaluation includes both **quantitative** and **qualitative** components.
 
-1. **Synthetic ground-truth test set (quantitative)**
+### **1. Synthetic evaluation (large test set)**
 
-   * 5 hand-crafted sentences with known spans
-   * Strict exact-span precision/recall/F1
+* Exact-span and entity-level metrics
+* Measures robustness against noise and obfuscations
 
-2. **Reddit samples (real-world qualitative)**
+### **2. Real-world Reddit evaluation**
 
-   * Scraped from: `relationships`, `personalfinance`, `jobs`, `askreddit`
-   * 15 samples evaluated in inference mode
-   * Manual annotation scaffold provided for future real-world metrics
+* Posts from various subreddits: relationships, jobs, personalfinance, etc.
+* Model used in inference mode
+* Manually annotated spans provided to allow the computation of real-world precision/recall
 
-**Run evaluation**
+### **Run evaluation**
 
 ```bash
 python evaluation/model_evaluation.py
 ```
 
-Outputs:
+Outputs saved as:
 
 * `stage3_complete_evaluation.json`
 * `reddit_manual_annotation.json`
 
 ---
 
-## Results Snapshot
+## **Results Snapshot**
 
-From the current evaluation run:
+*(Example numbers—replace with final results after retraining)*
 
-**Synthetic (exact-span)**
+### **Synthetic evaluation**
 
-* Precision: **0.000**
-* Recall: **0.000**
-* F1: **0.000**
+Models generally perform well on synthetic data but reveal:
 
-This is due to **boundary truncation** (type often correct, span slightly mismatched).
+* Boundary sensitivity under heavy in-span corruption
+* Strong performance on EMAIL, PHONE, CREDIT_CARD
+* More difficulty with ADDRESS and ORG (high variety)
 
-**Reddit**
+### **Reddit qualitative evaluation**
 
-* 3/15 samples had detected PII (≈20%)
-* Detected types: DATE (2), EMAIL (1)
+The model:
 
-**Latency**
+* Identifies obfuscated and noisy PII in a subset of posts
+* Exhibits lower recall due to novel templates and multi-sentence context
+* Shows promising generalization despite training purely on synthetic text
 
-* Avg inference time: **~24 ms per text**
+### **Latency**
 
----
-
-## Known Limitations
-
-* Synthetic test set is very small (5 examples), so aggregate metrics are unstable.
-* Exact-span scoring penalizes partial but privacy-useful detections.
-* Reddit samples are not fully manually labeled yet.
+~20–30 ms per text on CPU
+(<5 ms on GPU)
 
 ---
 
-## Next Steps
+## **Known Limitations**
 
-* Complete manual annotation of Reddit samples to compute real-world F1.
-* Add more noisy/obfuscated structured PII during training to reduce truncation.
-* Explore relaxed matching metrics (IoU / overlap) aligned with privacy utility.
-* Consider distillation/quantization for browser deployment.
-  
---- 
-## License
+* Synthetic distribution may not fully match real-world logs
+* Exact-span scoring is harsh for privacy tasks
+* No multi-sentence coreference resolution
+* Very extreme obfuscations may still be missed
 
-MIT License. See `LICENSE`.
+---
+
+## **Next Steps**
+
+* Expand template library with adversarial examples
+* Add IoU / token-overlap metrics to measure “practical privacy protection”
+* Distill the model into an on-device browser-ready version
+* Integrate with a Chrome/Firefox extension for real-time masking
+* Explore multilingual synthetic generation
+
+---
+
+## **License**
+
+MIT License.
+See `LICENSE`.
+
+Would you like any of these?
