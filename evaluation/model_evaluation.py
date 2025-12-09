@@ -28,7 +28,7 @@ try:
 
     
     # Take first 100 examples for evaluation (adjust as needed)
-    test_data = dataset_en.select(range(min(100, len(dataset_en))))
+    test_data = dataset_en.select(range(min(300, len(dataset_en))))
     
     print(f"✅ Loaded {len(test_data)} examples from ai4privacy dataset")
     print(f"   Dataset has real-world text with labeled PII")
